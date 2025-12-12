@@ -1,30 +1,60 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterView } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { onMounted } from 'vue'
+
+const auth = useAuthStore()
+
+// Cek auto-login jika token masih ada
+onMounted(() => {
+  auth.restoreSession()
+})
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="min-h-screen flex flex-col bg-gray-50">
+
+    <!-- GLOBAL NAVBAR -->
+    <header class="bg-white shadow px-4 py-3 flex items-center justify-between">
+      <h1 class="font-semibold text-lg">SIAKAD</h1>
+
+      <!-- Jika login, tampilkan foto/nama -->
+      <div v-if="auth.isLoggedIn" class="flex items-center gap-2">
+        <span class="text-sm text-gray-600">{{ auth.user?.name }}</span>
+        <button
+          class="text-red-500 text-sm"
+          @click="auth.logout()"
+        >
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <main class="flex-1 p-4">
+      <RouterView />
+    </main>
+
+    <!-- GLOBAL LOADER -->
+    <transition name="fade">
+      <div
+        v-if="auth.loading"
+        class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+      >
+        <div class="animate-spin h-10 w-10 border-4 border-white border-t-transparent rounded-full"></div>
+      </div>
+    </transition>
+
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .2s ease;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
