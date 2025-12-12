@@ -1,17 +1,12 @@
-import { defineStore } from 'pinia'
-import { api } from '@/services/api' 
-import router from '@/router'
+import { defineStore } from "pinia";
+import { api } from "@/services/api";
+import router from "@/router";
+import type { Dosen } from "@/models/Dosen";
 
-interface User {
-  id: number
-  name: string
-  email: string
-}
-
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore("auth", {
   state: () => ({
-    user: null as User | null,
-    token: localStorage.getItem('token') || '',
+    user: null as Dosen | null,
+    token: localStorage.getItem("token") || "",
     loading: false,
   }),
 
@@ -21,47 +16,47 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async login(email: string, password: string) {
-      this.loading = true
+      this.loading = true;
       try {
-        const res = await api.post('/dosen/login', {
-          email,
-          password,
-        })
+        const res = await api.post("/dosen/login", { email, password });
 
-        this.token = res.data.token
-        this.user = res.data.dosen
+        // Simpan token dulu
+        this.token = res.data.data.token;
+        localStorage.setItem("token", this.token);
 
-        localStorage.setItem('token', this.token)
+        // Baru set user
+        this.user = res.data.data.dosen as Dosen;
 
-        return true
+        return true;
       } catch (err) {
-        console.error('LOGIN ERROR:', err)
-        return false
+        console.error("LOGIN ERROR:", err);
+        return false;
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
 
     logout() {
-      this.user = null
-      this.token = ''
-      localStorage.removeItem('token')
-
-      router.push('/login')
+      this.user = null;
+      this.token = "";
+      localStorage.removeItem("token");
+      router.push("/login");
     },
 
     async restoreSession() {
-      if (!this.token) return
+      const token = localStorage.getItem("token");
+      if (!token) return;
 
+      this.loading = true;
       try {
-        this.loading = true
-        const res = await api.get('/me')
-        this.user = res.data
-      } catch {
-        this.logout()
+        const res = await api.get("/dosen/me");
+        this.user = res.data.data as Dosen;
+      } catch (err) {
+        console.error("Restore session error:", err);
+        this.logout();
       } finally {
-        this.loading = false
+        this.loading = false;
       }
-    }
+    },
   },
-})
+});

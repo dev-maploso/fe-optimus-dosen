@@ -4,5 +4,5 @@ const auth = useAuthStore();
 </script>
 
 <template>
-  <h1>Selamat datang, {{ auth.user?.name }}</h1>
+  <h1>Selamat datang, {{ auth.user?.nama }}</h1>
 </template>
