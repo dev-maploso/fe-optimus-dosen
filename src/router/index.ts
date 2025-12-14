@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { authGuard } from "./guards";
 
-
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -12,6 +11,10 @@ const router = createRouter({
     {
       path: "/login",
       component: () => import("../modules/auth/pages/LoginPage.vue"),
+    },
+    {
+      path: "/unlock-nilai",
+      component: () => import("../modules/dosen/pages/UnlockNilaiPage.vue"),
     },
     {
       path: "/dashboard",

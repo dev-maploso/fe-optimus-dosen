@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useNilaiMahasantri } from "@/composables/dosen/useNilaiMahasantri";
+import { useNilaiAccessStore } from "@/stores/nilaiAccess";
+import type { ModeNilai } from "@/models/nilai/ModeNilai";
 
 const route = useRoute();
 const kelasId = Number(route.params.id);
+
+const nilaiAccess = useNilaiAccessStore();
+
+// ✅ SATU-SATUNYA SUMBER MODE
+const modes: ModeNilai[] = ["harian", "uas", "absensi"];
 
 const {
   kelas,
@@ -17,6 +24,17 @@ const {
   isInvalidNilai,
   hasInvalidNilai,
 } = useNilaiMahasantri(kelasId);
+
+// ✅ Sinkronkan unlock → mode aktif
+watch(
+  () => nilaiAccess.unlockedMode,
+  (unlocked) => {
+    if (unlocked) {
+      modeNilai.value = unlocked;
+    }
+  },
+  { immediate: true }
+);
 
 onMounted(fetchNilai);
 </script>
@@ -36,14 +54,18 @@ onMounted(fetchNilai);
 
     <!-- ================= MODE SELECTOR ================= -->
     <div class="flex gap-2">
-      <button v-for="mode in ['harian', 'uas', 'absensi']" :key="mode" @click="modeNilai = mode as any"
-        class="px-4 py-2 rounded-lg text-sm font-semibold transition" :class="modeNilai === mode
-          ? 'bg-blue-600 text-white shadow'
-          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-          ">
-        {{ mode.toUpperCase() }}
-      </button>
+      <template v-for="mode in modes" :key="mode">
+        <button v-if="nilaiAccess.canAccess(mode)" @click="modeNilai = mode"
+          class="px-4 py-2 rounded-lg text-sm font-semibold transition" :class="modeNilai === mode
+            ? 'bg-blue-600 text-white shadow'
+            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'">
+          {{ mode.toUpperCase() }}
+        </button>
+      </template>
     </div>
+
+
+
 
     <!-- ================= LOADING ================= -->
     <div v-if="loading" class="text-center text-slate-500">

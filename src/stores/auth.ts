@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { api } from "@/services/api";
 import router from "@/router";
 import type { Dosen } from "@/models/Dosen";
+import { useNilaiAccessStore } from "@/stores/nilaiAccess";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -27,6 +28,8 @@ export const useAuthStore = defineStore("auth", {
         // Baru set user
         this.user = res.data.data.dosen as Dosen;
 
+        useNilaiAccessStore().reset();
+
         return true;
       } catch (err) {
         console.error("LOGIN ERROR:", err);
@@ -40,6 +43,7 @@ export const useAuthStore = defineStore("auth", {
       this.user = null;
       this.token = "";
       localStorage.removeItem("token");
+
       router.push("/login");
     },
 

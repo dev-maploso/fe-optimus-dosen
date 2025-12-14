@@ -19,7 +19,7 @@ const submit = async () => {
 
     await auth.restoreSession();
 
-    router.push("/dashboard");
+    router.push("/unlock-nilai");
   } else {
     alert("Email atau password salah!");
   }

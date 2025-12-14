@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 
 const auth = useAuthStore();
+const router = useRouter();
+
+const goDashboard = () => {
+  router.push("/dashboard");
+};
 </script>
 
 <template>
@@ -13,6 +19,15 @@ const auth = useAuthStore();
         {{ auth.user?.nama }}
       </span>
 
+      <!-- Tombol Dashboard -->
+      <button
+        class="text-blue-500 text-sm hover:underline"
+        @click="goDashboard"
+      >
+        Dashboard
+      </button>
+
+      <!-- Tombol Logout -->
       <button
         class="text-red-500 text-sm hover:underline"
         @click="auth.logout()"

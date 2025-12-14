@@ -1,18 +1,46 @@
 import { useAuthStore } from "@/stores/auth";
+import { useNilaiAccessStore } from "@/stores/nilaiAccess";
 
-export function authGuard(to: any) {
+let sessionRestored = false;
+
+export async function authGuard(to: any) {
   const auth = useAuthStore();
+  const nilaiAccess = useNilaiAccessStore();
 
-  // Jika route butuh login & user belum login → redirect
+  // 🔹 restore session SEKALI seumur app
+  if (!sessionRestored) {
+    await auth.restoreSession();
+    sessionRestored = true;
+  }
+
+  // 🔒 Route butuh login
   if (to.meta.requiresAuth && !auth.isLoggedIn) {
     return "/login";
   }
 
-  // Jika user sudah login dan mencoba akses /login → redirect ke dashboard
+  // 🔑 Sudah login tapi belum unlock nilai
+  if (
+    auth.isLoggedIn &&
+    !nilaiAccess.unlockedMode &&
+    to.path !== "/unlock-nilai" &&
+    to.path !== "/login"
+  ) {
+    return "/unlock-nilai";
+  }
+
+  // ❌ Sudah unlock tapi masih ke halaman unlock
+  if (
+    auth.isLoggedIn &&
+    nilaiAccess.unlockedMode &&
+    to.path === "/unlock-nilai"
+  ) {
+    return "/dashboard";
+  }
+
+  // 🚫 Sudah login tidak boleh ke login lagi
   if (to.path === "/login" && auth.isLoggedIn) {
     return "/dashboard";
   }
 
-  // Default: biarkan lanjut
   return true;
 }
