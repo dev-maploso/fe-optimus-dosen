@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { authGuard } from "./guards";
 
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -18,8 +19,9 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/input-nilai/:kelas_id",
-      component: () => import("../modules/dosen/pages/InputNilaiPage.vue"),
+      path: "/dosen/mata-kuliah/:id",
+      name: "dosen-mata-kuliah-detail",
+      component: () => import("../modules/dosen/pages/MataKuliahDetail.vue"),
       meta: { requiresAuth: true },
     },
   ],

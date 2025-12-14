@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+.nilai-input {
+  width: 100%;
+  max-width: 80px;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5e1;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.nilai-input:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
+}
