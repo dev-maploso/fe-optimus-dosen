@@ -53,7 +53,7 @@ export const useAuthStore = defineStore("auth", {
 
       this.loading = true;
       try {
-        const res = await api.get("/dosen/me");
+        const res = await api.get("/me");
         this.user = res.data.data as Dosen;
       } catch (err) {
         console.error("Restore session error:", err);
