@@ -12,7 +12,7 @@ const goDashboard = () => {
 
 <template>
   <header class="bg-white shadow px-4 py-3 flex items-center justify-between">
-    <h1 class="font-semibold text-lg">SIAKAD</h1>
+    <h1 class="font-semibold text-lg">PORTAL DOSEN</h1>
 
     <div v-if="auth.isLoggedIn" class="flex items-center gap-2">
       <span class="text-sm text-gray-600">
