@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch, computed, ref } from "vue";
+import { onMounted, watch, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useNilaiMahasantri } from "@/composables/dosen/useNilaiMahasantri";
 import { useNilaiAccessStore } from "@/stores/nilaiAccess";
