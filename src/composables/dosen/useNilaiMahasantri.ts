@@ -69,7 +69,7 @@ export function useNilaiMahasantri(kelasId: number) {
   /* =======================
    * SIMPAN NILAI
    * ======================= */
-  const simpanNilai = async () => {
+  const simpanNilai = async (showToast = true) => {
     saving.value = true;
     try {
       const nilai = mahasiswa.value.map((mhs) => {
@@ -92,9 +92,9 @@ export function useNilaiMahasantri(kelasId: number) {
         kelas_mata_kuliah_id: kelasId,
         nilai,
       });
-      toast.success("Nilai berhasil disimpan ✅");
+       if (showToast) toast.success("Nilai berhasil disimpan ✅");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Gagal menyimpan nilai");
+      if (showToast) toast.error(err.response?.data?.message || "Gagal menyimpan nilai");
     } finally {
       saving.value = false;
     }
