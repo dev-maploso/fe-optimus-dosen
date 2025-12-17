@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export const api = axios.create({
-  // baseURL: "https://optimus.mahadalyploso.com/api/v1",
-   baseURL: "http://localhost:8000/api/v1"
+  baseURL: "https://optimus.mahadalyploso.com/api/v1",
+  //  baseURL: "http://localhost:8000/api/v1"
 });
 
 // Ambil token langsung dari localStorage saja
