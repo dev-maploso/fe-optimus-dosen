@@ -61,7 +61,16 @@ export function useNilaiMahasantri(kelasId: number) {
    * ======================= */
   const isInvalidNilai = (mhs: MahasantriNilai) => {
     const nilai = getNilaiAktif(mhs);
-    return typeof nilai === "number" && (nilai < 0 || nilai > 100);
+
+    if (typeof nilai !== "number") return true;
+
+    if (modeNilai.value === "harian") {
+      // Untuk harian, harus antara 67.5 - 100
+      return nilai < 67.5 || nilai > 100;
+    }
+
+    // Untuk uas dan absensi tetap 0-100
+    return nilai < 0 || nilai > 100;
   };
 
   const hasInvalidNilai = computed(() => mahasiswa.value.some(isInvalidNilai));
@@ -92,9 +101,10 @@ export function useNilaiMahasantri(kelasId: number) {
         kelas_mata_kuliah_id: kelasId,
         nilai,
       });
-       if (showToast) toast.success("Nilai berhasil disimpan ✅");
+      if (showToast) toast.success("Nilai berhasil disimpan ✅");
     } catch (err: any) {
-      if (showToast) toast.error(err.response?.data?.message || "Gagal menyimpan nilai");
+      if (showToast)
+        toast.error(err.response?.data?.message || "Gagal menyimpan nilai");
     } finally {
       saving.value = false;
     }
