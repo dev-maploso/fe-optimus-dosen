@@ -60,18 +60,19 @@ export function useNilaiMahasantri(kelasId: number) {
    * VALIDATION
    * ======================= */
   const isInvalidNilai = (mhs: MahasantriNilai) => {
-    const nilai = getNilaiAktif(mhs);
+  const nilai = getNilaiAktif(mhs);
 
-    if (typeof nilai !== "number") return true;
+  // 👉 kosong = belum diisi = TIDAK error
+  if (nilai === null || nilai === undefined) return false;
+  if (typeof nilai !== "number" || isNaN(nilai)) return false;
 
-    if (modeNilai.value === "harian") {
-      // Untuk harian, harus antara 67.5 - 100
-      return nilai < 67.5 || nilai > 100;
-    }
+  if (modeNilai.value === "harian") {
+    return nilai < 67.5 || nilai > 100;
+  }
 
-    // Untuk uas dan absensi tetap 0-100
-    return nilai < 0 || nilai > 100;
-  };
+  return nilai < 0 || nilai > 100;
+};
+
 
   const hasInvalidNilai = computed(() => mahasiswa.value.some(isInvalidNilai));
 
