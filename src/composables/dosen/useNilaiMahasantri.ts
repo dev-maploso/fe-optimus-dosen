@@ -60,19 +60,18 @@ export function useNilaiMahasantri(kelasId: number) {
    * VALIDATION
    * ======================= */
   const isInvalidNilai = (mhs: MahasantriNilai) => {
-  const nilai = getNilaiAktif(mhs);
+    const nilai = getNilaiAktif(mhs);
 
-  // 👉 kosong = belum diisi = TIDAK error
-  if (nilai === null || nilai === undefined) return false;
-  if (typeof nilai !== "number" || isNaN(nilai)) return false;
+    // kosong = belum diisi → bukan error
+    if (nilai === null || nilai === undefined) return false;
+    if (Number.isNaN(nilai)) return false;
 
-  if (modeNilai.value === "harian") {
-    return nilai < 67.5 || nilai > 100;
-  }
+    if (modeNilai.value === "harian") {
+      return nilai < 67.5 || nilai > 100;
+    }
 
-  return nilai < 0 || nilai > 100;
-};
-
+    return nilai < 0 || nilai > 100;
+  };
 
   const hasInvalidNilai = computed(() => mahasiswa.value.some(isInvalidNilai));
 
@@ -80,36 +79,68 @@ export function useNilaiMahasantri(kelasId: number) {
    * SIMPAN NILAI
    * ======================= */
   const simpanNilai = async (showToast = true) => {
-    saving.value = true;
-    try {
-      const nilai = mahasiswa.value.map((mhs) => {
+  saving.value = true;
+  try {
+    const nilai = mahasiswa.value
+      .map((mhs) => {
         const base = {
           kelas_mata_kuliah_mahasantri_id: mhs.mahasantri_id,
         };
 
         if (modeNilai.value === "harian") {
-          return { ...base, nilai_harian: mhs.nilai_harian ?? 0 };
+          if (
+            mhs.nilai_harian === null ||
+            mhs.nilai_harian === undefined ||
+            Number.isNaN(mhs.nilai_harian)
+          ) {
+            return null; // ⬅️ JANGAN DIKIRIM
+          }
+          return { ...base, nilai_harian: mhs.nilai_harian };
         }
 
         if (modeNilai.value === "uas") {
-          return { ...base, nilai_uas: mhs.nilai_uas ?? 0 };
+          if (
+            mhs.nilai_uas === null ||
+            mhs.nilai_uas === undefined ||
+            Number.isNaN(mhs.nilai_uas)
+          ) {
+            return null;
+          }
+          return { ...base, nilai_uas: mhs.nilai_uas };
         }
 
-        return { ...base, nilai_absensi: mhs.nilai_absensi ?? 0 };
-      });
+        if (
+          mhs.nilai_absensi === null ||
+          mhs.nilai_absensi === undefined ||
+          Number.isNaN(mhs.nilai_absensi)
+        ) {
+          return null;
+        }
 
-      await api.post("/dosen/nilai-massal", {
-        kelas_mata_kuliah_id: kelasId,
-        nilai,
-      });
-      if (showToast) toast.success("Nilai berhasil disimpan ✅");
-    } catch (err: any) {
-      if (showToast)
-        toast.error(err.response?.data?.message || "Gagal menyimpan nilai");
-    } finally {
+        return { ...base, nilai_absensi: mhs.nilai_absensi };
+      })
+      .filter(Boolean);
+
+    // ⛔ tidak ada nilai → tidak perlu request
+    if (nilai.length === 0) {
       saving.value = false;
+      return;
     }
-  };
+
+    await api.post("/dosen/nilai-massal", {
+      kelas_mata_kuliah_id: kelasId,
+      nilai,
+    });
+
+    if (showToast) toast.success("Nilai berhasil disimpan ✅");
+  } catch (err: any) {
+    if (showToast)
+      toast.error(err.response?.data?.message || "Gagal menyimpan nilai");
+  } finally {
+    saving.value = false;
+  }
+};
+
 
   /* =======================
    * EXPORT
