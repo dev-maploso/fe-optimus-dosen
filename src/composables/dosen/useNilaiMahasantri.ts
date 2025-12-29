@@ -67,10 +67,10 @@ export function useNilaiMahasantri(kelasId: number) {
     if (Number.isNaN(nilai)) return false;
 
     if (modeNilai.value === "harian") {
-      return nilai < 6.75 || nilai > 10;
+      return nilai < 67.5 || nilai > 100;
     }
 
-    return nilai < 0 || nilai > 10;
+    return nilai < 10 || nilai > 100;
   };
 
   const hasInvalidNilai = computed(() => mahasiswa.value.some(isInvalidNilai));
