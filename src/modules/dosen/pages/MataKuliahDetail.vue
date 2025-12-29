@@ -132,21 +132,21 @@ async function handleManualSave() {
               <input type="number" v-model.number="mhs.nilai_harian" min="0" max="100"
                 class="w-full rounded-md px-2 py-1 border border-green-300 text-center transition-all duration-200 focus:ring-2 focus:ring-green-400 focus:border-green-400"
                 :class="isInvalidNilai(mhs) && 'ring-2 ring-red-400'" />
-              <p v-if="isInvalidNilai(mhs)" class="text-xs text-red-600 mt-1">🥹. Nilai harus antara 67.5 – 100</p>
+              <p v-if="isInvalidNilai(mhs)" class="text-xs text-red-600 mt-1">🥹. Nilai harus antara 6.75 – 10</p>
             </td>
 
             <td v-if="modeNilai === 'uas'" class="border border-green-200 p-2 text-center">
               <input type="number" v-model.number="mhs.nilai_uas" min="0" max="100"
                 class="w-full rounded-md px-2 py-1 border border-green-300 text-center transition-all duration-200 focus:ring-2 focus:ring-green-400 focus:border-green-400"
                 :class="isInvalidNilai(mhs) && 'ring-2 ring-red-400'" />
-              <p v-if="isInvalidNilai(mhs)" class="text-xs text-red-600 mt-1">🥹. Nilai harus antara 0 – 100</p>
+              <p v-if="isInvalidNilai(mhs)" class="text-xs text-red-600 mt-1">🥹. Nilai harus antara 0 – 10</p>
             </td>
 
             <td v-if="modeNilai === 'absensi'" class="border border-green-200 p-2 text-center">
               <input type="number" v-model.number="mhs.nilai_absensi" min="0" max="100"
                 class="w-full rounded-md px-2 py-1 border border-green-300 text-center transition-all duration-200 focus:ring-2 focus:ring-green-400 focus:border-green-400"
                 :class="isInvalidNilai(mhs) && 'ring-2 ring-red-400'" />
-              <p v-if="isInvalidNilai(mhs)" class="text-xs text-red-600 mt-1">🥹. Nilai harus antara 0 – 100</p>
+              <p v-if="isInvalidNilai(mhs)" class="text-xs text-red-600 mt-1">🥹. Nilai harus antara 0 – 10</p>
             </td>
           </tr>
         </tbody>
